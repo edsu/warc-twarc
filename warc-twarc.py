@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
+import csv
 import sys
 import json
 
 from twarc import Twarc
+from twarc import json2csv
 from bs4 import BeautifulSoup
 from warcio.archiveiterator import ArchiveIterator
 
@@ -35,8 +37,10 @@ def tweet_ids(warc_file):
 
 def main(warc_file):
     twitter = Twarc()
+    out = csv.writer(sys.stdout)
+    out.writerow(json2csv.get_headings())
     for tweet in twitter.hydrate(tweet_ids(warc_file)):
-        print(json.dumps(tweet))
+        out.writerow(json2csv.get_row(tweet))
 
 if __name__ == "__main__":
     main(sys.argv[1])
